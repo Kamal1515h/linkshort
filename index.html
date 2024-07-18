@@ -39,12 +39,19 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-bottom: 10px;
         }
         button:hover {
             background-color: #0056b3;
         }
         .result {
             margin-top: 20px;
+        }
+        .copy-button {
+            background-color: #28a745;
+        }
+        .copy-button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
@@ -56,26 +63,46 @@
         <div class="result" id="result"></div>
     </div>
     <script>
-        let urlMapping = {};
-
         function shortenLink() {
             const originalUrl = document.getElementById('originalUrl').value;
             const resultDiv = document.getElementById('result');
             if (originalUrl) {
                 const shortCode = Math.random().toString(36).substring(7);
-                const shortUrl = 'https://short.ly/' + shortCode;
-                urlMapping[shortCode] = originalUrl;
-                resultDiv.innerHTML = `<p>Shortened URL: <a href="${shortUrl}" target="_blank" onclick="redirect(event, '${shortCode}')">${shortUrl}</a></p>`;
+                const shortUrl = window.location.origin + window.location.pathname + '?shortcode=' + shortCode;
+                localStorage.setItem(shortCode, originalUrl);
+                resultDiv.innerHTML = `
+                    <p>Shortened URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a></p>
+                    <button class="copy-button" onclick="copyToClipboard('${shortUrl}')">Copy</button>
+                `;
             } else {
                 resultDiv.innerHTML = '<p>Please enter a valid URL</p>';
             }
         }
 
-        function redirect(event, shortCode) {
-            event.preventDefault();
-            const originalUrl = urlMapping[shortCode];
-            window.open(originalUrl, '_blank');
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Shortened URL copied to clipboard!');
         }
+
+        function checkForRedirect() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shortCode = urlParams.get('shortcode');
+            if (shortCode) {
+                const originalUrl = localStorage.getItem(shortCode);
+                if (originalUrl) {
+                    window.location.href = originalUrl;
+                } else {
+                    alert('URL not found.');
+                }
+            }
+        }
+
+        window.onload = checkForRedirect;
     </script>
 </body>
 </html>
