@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Link Shortener</h1>
+        <input type="text" id="originalUrl" placeholder="Enter the original URL">
+        <button onclick="shortenLink()">Shorten</button>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        let urlMapping = {};
+
+        function shortenLink() {
+            const originalUrl = document.getElementById('originalUrl').value;
+            const resultDiv = document.getElementById('result');
+            if (originalUrl) {
+                const shortCode = Math.random().toString(36).substring(7);
+                const shortUrl = 'https://short.ly/' + shortCode;
+                urlMapping[shortCode] = originalUrl;
+                resultDiv.innerHTML = `<p>Shortened URL: <a href="${shortUrl}" target="_blank" onclick="redirect(event, '${shortCode}')">${shortUrl}</a></p>`;
+            } else {
+                resultDiv.innerHTML = '<p>Please enter a valid URL</p>';
+            }
+        }
+
+        function redirect(event, shortCode) {
+            event.preventDefault();
+            const originalUrl = urlMapping[shortCode];
+            window.open(originalUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
