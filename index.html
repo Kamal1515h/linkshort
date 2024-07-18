@@ -67,7 +67,7 @@
             const originalUrl = document.getElementById('originalUrl').value;
             const resultDiv = document.getElementById('result');
             if (originalUrl) {
-                const shortCode = Math.random().toString(36).substring(7);
+                const shortCode = Math.random().toString(36).substring(2, 8); // Generate a shorter code
                 const shortUrl = window.location.origin + window.location.pathname + '?shortcode=' + shortCode;
                 localStorage.setItem(shortCode, originalUrl);
                 resultDiv.innerHTML = `
